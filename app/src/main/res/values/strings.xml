@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Swipe Application</string>
+
+    <string name="hello_world">Yowza!</string>
+    <string name="action_settings">Settings</string>
+    <string name="plus_button_text">+</string>
+    <string name="minus_button_text">-</string>
+    <string-array name="url_list">
+        <item>Choose a URL</item>
+        <item>https://ats.osstage.net</item>
+        <item>https://ats1.osstage.net</item>
+        <item>https://atscallback.osstage.net</item>
+        <item>https://atsgateway.onshift.com</item>
+        <item>http://192.168.1.184:5000</item>
+    </string-array>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
