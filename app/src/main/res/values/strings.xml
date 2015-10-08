@@ -6,12 +6,12 @@
     <string name="plus_button_text">+</string>
     <string name="minus_button_text">-</string>
     <string name="url_not_selected">Choose a URL</string>
+    <string name="test_button_name">Test Server</string>
     <string-array name="url_list">
         <item>https://ats.osstage.net</item>
         <item>https://ats1.osstage.net</item>
         <item>https://atscallback.osstage.net</item>
         <item>https://atsgateway.onshift.com</item>
-        <item>http://192.168.1.93:5000</item>
     </string-array>
 
 <!-- TODO: Remove or change this placeholder text -->

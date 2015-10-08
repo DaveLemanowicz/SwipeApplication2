@@ -5,63 +5,72 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyFragment.OnFragmentInteractionListener} interface
+ * {@link ServerTestFragment.OnServerTestInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyFragment#newInstance} factory method to
+ * Use the {@link ServerTestFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyFragment extends Fragment implements GatewayTestFragment {
+public class ServerTestFragment extends Fragment implements GatewayTestFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
 
 
-    private OnFragmentInteractionListener mListener;
+    private OnServerTestInteractionListener mListener;
+    private View mView;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyFragment newInstance(String message) {
-        MyFragment fragment = new MyFragment();
+    public static ServerTestFragment newInstance(String message) {
+        Log.e("Huh?","in newInstance");
+        ServerTestFragment fragment = new ServerTestFragment();
         Bundle args = new Bundle(1);
         args.putString(EXTRA_MESSAGE, message);
         fragment.setArguments(args);
         return fragment;
     }
 
-    public MyFragment() {
+    public ServerTestFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("Huh?", "in ServerTestFragment.onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e("Huh?","in onCreateView. this: "+this.toString());
         String message = getArguments().getString(EXTRA_MESSAGE);
-        View v = inflater.inflate(R.layout.fragment_my, container, false);
-        TextView messageTextView = (TextView)v.findViewById(R.id.textView);
+        mView = inflater.inflate(R.layout.server_test, container, false);
+        TextView messageTextView = (TextView)mView.findViewById(R.id.textView);
         messageTextView.setText(message);
-        return v;
+        return mView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onServerTestInteraction(uri);
         }
     }
 
@@ -69,10 +78,10 @@ public class MyFragment extends Fragment implements GatewayTestFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnServerTestInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnServerTestInteractionListener");
         }
     }
 
@@ -83,7 +92,36 @@ public class MyFragment extends Fragment implements GatewayTestFragment {
     }
 
     public void urlSelected(String url){
-        return;
+
+        Activity a = getActivity();
+        View v = getView();
+
+        if (a==null) {
+            Log.e("Huh?","activity: null");
+        } else {
+            Log.e("Huh?","activity: " + a.toString());
+        }
+
+        if (v==null) {
+            Log.e("Huh?","view: null");
+        } else {
+            Log.e("Huh?","view: " + v.toString());
+        }
+
+        //if (a == null){
+        //    return;
+        //}
+
+        Log.e("Huh?","in urlSelected. this: "+this.toString());
+
+        Button test_button = (Button)getView().findViewById(R.id.test_url_button);
+        if (url.startsWith("http")){
+            test_button.setEnabled(true);
+        } else {
+            test_button.setEnabled(false);
+        }
+
+
     }
 
     /**
@@ -96,9 +134,11 @@ public class MyFragment extends Fragment implements GatewayTestFragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
+    public interface OnServerTestInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onServerTestInteraction(Uri uri);
     }
+
+
 
 }

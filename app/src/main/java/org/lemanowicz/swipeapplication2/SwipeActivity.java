@@ -14,16 +14,22 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,11 +45,18 @@ interface URLListManager{
     public void addAndSelectURL(String s);
 }
 
+interface GatewayTestFragment{
+    public void urlSelected(String url);
+}
+
 public class SwipeActivity extends FragmentActivity
-        implements MyFragment.OnFragmentInteractionListener,  URLListManager {
+        implements MyFragment.OnFragmentInteractionListener,
+                   ServerTestFragment.OnServerTestInteractionListener,
+                   URLListManager {
 
     MyPageAdapter pageAdapter;
     private Spinner spinner;
+    List<Fragment> mFragments;
 
     static public class DeleteURLConfirmation extends DialogFragment {
 
@@ -138,13 +151,38 @@ public class SwipeActivity extends FragmentActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e("Huh?", "In SwipeActivity.onCreate");
         setContentView(R.layout.activity_swipe);
-        List<Fragment> fragments = getFragments();
-        pageAdapter = new MyPageAdapter(getSupportFragmentManager(), fragments);
+        mFragments = getFragments();
+        pageAdapter = new MyPageAdapter(getSupportFragmentManager(), mFragments);
         final ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
 
         updateSpinner();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+
+                String sel = parentView.getItemAtPosition(position).toString();
+                for (Fragment f : mFragments) {
+                    GatewayTestFragment gtf = (GatewayTestFragment) f;
+                    gtf.urlSelected(sel);
+                }
+
+                Log.e("Huh?", parentView.getItemAtPosition(position).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+
+
+
+
     }
 
     @Override
@@ -238,9 +276,12 @@ public class SwipeActivity extends FragmentActivity
 
     private List<Fragment> getFragments(){
 
+        Log.e("Huh?", "in getFragments");
+
         List<Fragment> fList = new ArrayList<Fragment>();
 
-        fList.add(MyFragment.newInstance("Fragment 1"));
+        fList.add(ServerTestFragment.newInstance("Server Test"));
+        //fList.add(MyFragment.newInstance("Fragment 1"));
         fList.add(MyFragment.newInstance("Fragment 2"));
 
         return fList;
@@ -250,4 +291,26 @@ public class SwipeActivity extends FragmentActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+    @Override
+    public void onServerTestInteraction(Uri uri) {
+
+    }
+
+    public void handleTestServerClick(View view){
+        Object item = spinner.getSelectedItem();
+        String url_text = item.toString() + "/api/v1.0/admin/test/";
+
+        TextView text = (TextView)findViewById(R.id.textView);
+        text.setText(url_text);
+        try {
+            URL url = new URL(url_text+"?format=json");
+            HitUrlTask task = new HitUrlTask(text);
+            task.execute(url);
+        } catch (MalformedURLException ex) {
+            Log.e("Huh?", "Malformed Exception: " + url_text);
+        }
+
+
+    }
+
 }
